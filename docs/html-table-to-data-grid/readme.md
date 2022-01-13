@@ -1,6 +1,6 @@
 HTML Tables are simple to use for rendering small amounts of data. When we want to work with a lot of data and offer the user features like sorting, filtering and pagination, then we need to consider adding a JavaScript component.
 
-In this post we will use the free community edition of AG Grid Data Grid to convert from a long static HTML table to an easy to use interactive Data Grid. The amount of JavaScript we need to do this is minimal and very simple.
+In this post we will use the free community edition of [AG Grid JavaScript Data Grid](https://www.ag-grid.com/) to convert from a long static HTML table to an easy to use interactive Data Grid. The amount of JavaScript we need to do this is minimal and very simple.
 
 We will build the example code in three steps:
 
@@ -69,6 +69,8 @@ This will render a single Todo Item in a table:
 |-----|-----|-----|-----|
 |1|1|My todo 1|false|
 
+Here is the example [Static HTML Table Page](https://eviltester.github.io/freecodecampexamples/html-table-to-data-grid/static-html-table.html)
+
 Rendered in a browser the page would look like the image below.
 
 The `table` is styled to have a width of 100% of the page using `width:100%` and the border lines between cells in the table have been styled to show as one line with `border-collapse: collapse`.
@@ -88,7 +90,7 @@ At the moment our list of Todo Items is statically coded into the page. For the 
 
 Since we will be loading the data from an API, I won't hard code any data in the table. To support dynamic loading I simply remove the line of data from the `table` because I'm going to create the data rows using JavaScript:
 
-```
+```html
     <div id="data-table">
         <table id="html-data-table">
             <tr>
@@ -103,7 +105,7 @@ Since we will be loading the data from an API, I won't hard code any data in the
 
 I will add the JavaScript in the `index.html` page imediately before the terminating `body` tag.
 
-```
+```html
     <script type="text/javascript" charset="utf-8">
     </script>
 </body>
@@ -119,7 +121,7 @@ You can try it for yourself without JavaScript by clicking on the link above.
 
 The easiest way to make a `GET` request on the API is by using the `fetch` function built into JavaScript.
 
-```
+```html
     <script type="text/javascript" charset="utf-8">
 
         fetch('https://jsonplaceholder.typicode.com/todos')
@@ -137,13 +139,13 @@ To explain the above code, I'll describe it in sections below:
 
 - Issue a GET request to `https://jsonplaceholder.typicode.com/todos`
 
-```
+```javascript
 fetch('https://jsonplaceholder.typicode.com/todos')
 ```
 
 - Then when the request is finished convert the response to a JavaScript Object, in our case this will be an array containing all the Todo Items.
 
-```
+```javascript
 .then(function (response) {
                 return response.json();
             })
@@ -151,7 +153,7 @@ fetch('https://jsonplaceholder.typicode.com/todos')
 
 - Then write the JavaScript object to the console
 
-```
+```javascript
 .then(function (apiJsonData) {
                 console.log(apiJsonData);
             })
@@ -159,7 +161,7 @@ fetch('https://jsonplaceholder.typicode.com/todos')
 
 With this code in our application, we won't see anything in the table, but we would see the array rendered in the Browser Dev Tools Console where we could view the data.
 
-```
+```shell
 (200) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, …]
 ```
 
@@ -208,6 +210,8 @@ The `renderDataInTheTable` function loops over all the Todo Items returned from 
 For each Todo Item the creates a new `tr` element, then adds each value in the Todo Item to the table as a `td` element.
 
 When the above code is added to our application and the page loads we will see the HTML table now has all 200 Todo Items rendered in the table.
+
+Here is the example [Dynamic HTML Table Page](https://eviltester.github.io/freecodecampexamples/html-table-to-data-grid/table-index.html).
 
 ## Benefits and Disadvantages of Long HTML Tables
 
@@ -433,6 +437,8 @@ To add automatic pagination to the grid we add the `pagination: true` property a
 
 With the above code we have created a User Friendly Data Grid that dynamically fetches the data, adds it to a data grid which supports sorting, filtering and pagination.
 
+Here is the example [Data Grid HTML Page](https://eviltester.github.io/freecodecampexamples/html-table-to-data-grid/datagrid-index.html).
+
 ```html
 <!DOCTYPE html>
 <html>
@@ -507,9 +513,29 @@ Since the `userId` and `id` columns are numeric, we could make then use a number
 
 ```javascript
         const columnDefs = [
-            { field: 'userId', filter: 'agNumberColumnFilter', maxWidth: 100 },
-            { field: 'id', filter: 'agNumberColumnFilter', maxWidth: 100 },
+            { field: 'userId', filter: 'agNumberColumnFilter'},
+            { field: 'id', filter: 'agNumberColumnFilter'},
             { field: 'title' },
             { field: 'completed' },
         ];
 ```
+
+Here is the example [Data Grid Number Filters HTML Page](https://eviltester.github.io/freecodecampexamples/html-table-to-data-grid/datagrid-number-filters-index.html).
+
+There are a lot of [configuration options for columns](https://www.ag-grid.com/javascript-data-grid/column-properties/) listed in the AG Grid Documentation, for example configuring the width, style and making the cells editable.
+
+## Benefits of a Data Grid
+
+For many web sites a simple HTML table will be perfectly sensible way to render tabular data. It's fast and easy to understand, with a little CSS the table can look good for your users.
+
+When your pages become more complex, rendering more data, or requiring more interactivity for the user then it starts to make more sense to use a Data Grid component or library.
+
+Data Grid's provide much of the functionality your users need, without having to write a lot of code. In the example presented we moved from a dynamic table which read the data from an API to a Data Grid reading from an API with sorting, filtering, pagination and column resizing but our html code was the same length and the JavaScript we wrote was less complicated because the Data Grid did all the work of rendering the data.
+
+Data Grid's can handle hundreds of thousands of rows and update quickly so they are often used in real time financial trading systems with prices in cells updating every few milliseconds.
+
+If you are using React, then in addition to [AG Grid](https://www.ag-grid.com/react-data-grid/) you can look at [Material UI](https://mui.com/components/data-grid/). [React Table](https://react-table.tanstack.com/) is a 'table' rather than a Data Grid so it requires a bit more code to render the table.
+
+Both Material UI and React Table are only available for React. AG Grid is framework agnostic and will work with JavaScript, TypeScript, React, Angular, and Vue.
+
+The source code for this post can be [found in this Github repo](https://github.com/eviltester/freecodecampexamples) in the folder [docs/html-table-to-data-grid](https://github.com/eviltester/freecodecampexamples/tree/main/docs/html-table-to-data-grid).
