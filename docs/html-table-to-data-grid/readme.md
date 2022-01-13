@@ -157,21 +157,15 @@ fetch('https://jsonplaceholder.typicode.com/todos')
             })
 ```
 
-With this code in our application, we won't see anything in the table, but we would see the array rendered in the Browser Dev Tools Console.
+With this code in our application, we won't see anything in the table, but we would see the array rendered in the Browser Dev Tools Console where we could view the data.
 
 ```
-(200) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}
-, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}
-, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}
-, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}
-, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}
-, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}
-, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, …]
+(200) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, …]
 ```
 
 The API call returns 200 items, and each item is a Todo Object:
 
-```
+```json
   {
     "userId": 1,
     "id": 1,
@@ -182,7 +176,7 @@ The API call returns 200 items, and each item is a Todo Object:
 
 Our next step is to render the data in the table:
 
-```
+```html
     <script type="text/javascript" charset="utf-8">
 
         fetch('https://jsonplaceholder.typicode.com/todos')
@@ -236,14 +230,286 @@ e.g. add extra functionality like:
 
 ## Data Grid Components and Libraries
 
-There are many free Data Grid Components available, most of them are framework specific so they require coding in React, Angular or Vue.
+There are many free Data Grid Components available, most of them are framework specific so they require coding in either React, Angular or Vue.
 
-I'm using AG Grid for this example because the free version can be used with JavaScript, TypeScript, React, Angular or Vue. The "AG" stands for Agnostic so can be used with any framework.
+I'm using AG Grid for this example because the free version can be used with JavaScript, TypeScript, React, Angular or Vue. The "AG" stands for Agnostic so can be used with any framework. When you learn to use it in one framework, the same API is available for other frameworks making your knowledge transferrable to other projects.
 
-Also, the free version can be used in commercial applications so if you manage to expand the demo application shown here into a commercial Todo Management Application, you'll still be able to use AG Grid for free. Many commercial applications have been built using the free version of AG Grid.
+Also, the free version can be used in commercial applications so if you manage to expand the demo application shown here into a commercial Todo Management Application, you'll still be able to use AG Grid for free. Many commercial applications have been built using the free version of AG Grid. AG Grid is frequently sought as a skill in job applications so is worth experimenting with.
 
-The commercial version of AG GRid has extra features like Excel Exporting and creating Graphs but we don't need any of that functionality in this demo.
+The commercial version of AG Grid has extra features like Excel Exporting and creating Graphs but we don't need any of that functionality in this demo.
 
 Using a Data Grid means that we configure the Data Grid, and give it the data to render, and the Grid handles all the other functionality like sorting, filtering and pagination.
 
 We can convert our existing code to use AG Grid with just a few changes.
+
+## Adding AG Grid JavaScript and CSS
+
+AG Grid is a library so we include the JavaScript required.
+
+If you are using build tools like `npm` then various `npm install` commands are listed in the [Getting Started with AG Grid]() Documentation.
+
+We are using plain JavaScript therefore we can include the `script` in our `head` section.
+
+```html
+<head>
+    <title>Data Grid Example</title>
+    <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css">
+    <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-balham.css">
+</head>
+```
+
+This includes the community edition of AG Grid and the CSS required to render the Grid properly.
+
+Our `data-table` `div` no longer needs to have any `table` element:
+
+```html
+    <div id="data-table" class="ag-theme-balham">
+    </div>
+```
+
+AG Grid code will create the HTML for the Data Grid when we set it up, we add the `class` to use an [AG Grid theme](https://www.ag-grid.com/javascript-data-grid/themes/), in this example we are using the theme `ag-theme-balham`.
+
+AG Grid requires setting a width and height for the `div`, I chose to add this as the `style` section in the code:
+
+```html
+    <style>
+        #data-table {
+            height: 500px;
+            width: 100%;
+        }
+    </style>
+```
+
+The grid will be shown as 500 pixels high and fill `100%` width of the screen, this replicates the basic styling we had with the HTML table. But also shows one of the benefits of using a Data Grid. The size of the table rendered can be easily controlled and scroll bars will be added automatically as necessary by the Grid itself.
+
+## Configuring AG Grid and Rendering Data
+
+The `script` section of the code changes because we need to:
+
+- configure the data grid
+- create a new data grid using the configuration
+- fetch the data and add it to the grid
+
+I'll show the initial amended `script` section below and then explain it in the following paragraphs.
+
+```html
+    <script type="text/javascript" charset="utf-8">
+
+        const columnDefs = [
+            { field: 'userId' },
+            { field: 'id' },
+            { field: 'title' },
+            { field: 'completed' },
+        ];
+
+        const gridOptions = {
+            columnDefs: columnDefs,
+            onGridReady: (event) =>{renderDataInTheTable(event.api)}
+        };
+
+        const eGridDiv = document.getElementById('data-table');
+        new agGrid.Grid(eGridDiv, gridOptions);
+
+        function renderDataInTheTable(api) {
+            fetch('https://jsonplaceholder.typicode.com/todos')
+                .then(function (response) {
+                    return response.json();
+                }).then(function (data) {
+                    api.setRowData(data);
+                    api.sizeColumnsToFit();
+                })
+        }
+    </script>
+```
+
+A Data Grid is data and configuration driven, we don't have to write much code in order to create a functional Data Grid.
+
+First we create an array of Column Objects which define the columns in the Data Grid, these columns map on to the data.
+
+The data that we are receiving from the API call has four properties "userId", "id", "title" and "completed":
+
+```json
+  {
+    "userId": 1,
+    "id": 1,
+    "title": "delectus aut autem",
+    "completed": false
+  }
+```
+To render these in the Data Grid as columns we create an Object with a `field` property where the value is the name of the property in the Data Object.
+
+```javascript
+        const columnDefs = [
+            { field: 'userId' },
+            { field: 'id' },
+            { field: 'title' },
+            { field: 'completed' },
+        ];
+```
+
+Next we create the `gridOptions` object. This configures the Data Grid:
+
+```javascript
+        const gridOptions = {
+            columnDefs: columnDefs,
+            onGridReady: (event) =>{renderDataInTheTable(event.api)}
+        };
+```
+
+The `columnDefs` property is assigned the array of Column Objects that we defined earlier.
+
+The `onGridReady` property is assigned a function which will call the `renderDataInTheTable` function when the grid has been created and rendered in the DOM i.e. when the grid is ready.
+
+
+To add the grid to the page we find the `div` element which will contain the grid, then instantiate a new AG Grid object for that element and using hte options we configured:
+
+
+```javascript
+        const eGridDiv = document.getElementById('data-table');
+        new agGrid.Grid(eGridDiv, gridOptions);
+```
+
+The function to fetch the data and render the data in the grid is much the same `fetch` code that we used for the dynamic HTML table, the difference is that the `renderDataInTheTable` function receives the AG Grid Api object as a parameter allowing us to call AG Grid functionality to set the row data and size the columns to fit the grid:
+
+```javascript
+        function renderDataInTheTable(api) {
+            fetch('https://jsonplaceholder.typicode.com/todos')
+                .then(function (response) {
+                    return response.json();
+                }).then(function (data) {
+                    api.setRowData(data);
+                    api.sizeColumnsToFit();
+                })
+        }
+```
+
+When this code runs we will have basically replicated the same functionality of the dynamic HTML table, but now all the data is shown in a table with a scroll bar.
+
+To receive the benefits of using a Data Grid and allow the user to sort, filter and navigate through the data easily we amend the configuration.
+
+## Sorting, Filtering, Pagination
+
+All we configured in the Data Grid so far was:
+
+- which fields from the data to display
+- what data to use
+
+To add sorting, filtering, resizable columns and pagination we amend the `gridOptions` configuration:
+
+```javascript
+        const gridOptions = {
+
+            defaultColDef: {
+                sortable: true,
+                filter: 'agTextColumnFilter',
+                resizable: true
+            },
+
+            pagination: true,
+
+            columnDefs: columnDefs,
+            onGridReady: (event) =>{renderDataInTheTable(event.api)}
+        };
+```
+
+We can configure columns in AG Grid individually by adding additional properties to the `columnDefs` objects, or if the same functionality is required by default in all columns we can configure the `defaultColDef`.
+
+Here we configure it to be sortable, filterable and resizable:
+
+```javascript
+            defaultColDef: {
+                sortable: true,
+                filter: 'agTextColumnFilter',
+                resizable: true
+            },
+```
+
+The default filter we defined for all the columns is the text filter.
+
+To add automatic pagination to the grid we add the `pagination: true` property and AG Grid will automatically paginate the data for us.
+
+## User Friendly Data Grid
+
+With the above code we have created a User Friendly Data Grid that dynamically fetches the data, adds it to a data grid which supports sorting, filtering and pagination.
+
+```html
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Data Grid Example</title>
+    <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css">
+    <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-balham.css">
+</head>
+
+<body>
+    <style>
+        #data-table {
+            height: 500px;
+            width: 100%;
+        }
+    </style>
+
+    <h1>TODO List</h1>
+
+    <div id="data-table" class="ag-theme-balham">
+    </div>
+
+    <script type="text/javascript" charset="utf-8">
+
+        const columnDefs = [
+            { field: 'userId' },
+            { field: 'id' },
+            { field: 'title' },
+            { field: 'completed' },
+        ];
+
+        const gridOptions = {
+
+            defaultColDef: {
+                sortable: true,
+                filter: 'agTextColumnFilter',
+                resizable: true
+            },
+
+            pagination: true,
+            
+            columnDefs: columnDefs,
+            onGridReady: (event) =>{renderDataInTheTable(event.api)}
+        };
+
+        const eGridDiv = document.getElementById('data-table');
+
+        new agGrid.Grid(eGridDiv, gridOptions);
+
+        function renderDataInTheTable(api) {
+            fetch('https://jsonplaceholder.typicode.com/todos')
+                .then(function (response) {
+                    return response.json();
+                }).then(function (data) {
+                    api.setRowData(data);
+                    api.sizeColumnsToFit();
+                })
+        }
+    </script>
+</body>
+</html>
+```
+
+
+
+## Number Filters
+
+Since the `userId` and `id` columns are numeric, we could make then use a number filter by amending the `columnDefs`
+
+
+```javascript
+        const columnDefs = [
+            { field: 'userId', filter: 'agNumberColumnFilter', maxWidth: 100 },
+            { field: 'id', filter: 'agNumberColumnFilter', maxWidth: 100 },
+            { field: 'title' },
+            { field: 'completed' },
+        ];
+```
