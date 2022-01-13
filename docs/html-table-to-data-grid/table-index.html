@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Table Example</title>
+</head>
+
+<body>
+
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td,
+        th {
+            border: 1px solid #000000;
+            text-align: left;
+            padding: 8px;
+        }
+    </style>
+
+    <h1>TODO List</h1>
+
+    <div id="data-table">
+        <table id="html-data-table">
+            <tr>
+                <th>userId</th>
+                <th>id</th>
+                <th>title</th>
+                <th>completed</th>
+            </tr>
+        </table>    
+    </div>
+
+    <script type="text/javascript" charset="utf-8">
+
+        fetch('https://jsonplaceholder.typicode.com/todos')
+            .then(function (response) {
+                return response.json();
+            }).then(function (apiJsonData) {
+                console.log(apiJsonData);
+                renderDataInTheTable(apiJsonData);
+            })
+
+        function renderDataInTheTable(todos) {
+            const mytable = document.getElementById("html-data-table");
+            todos.forEach(todo => {
+                let newRow = document.createElement("tr");
+                Object.values(todo).forEach((value) => {
+                    let cell = document.createElement("td");
+                    cell.innerText = value;
+                    newRow.appendChild(cell);
+                })
+                mytable.appendChild(newRow);
+            });
+        }
+    </script>
+</body>
+
+</html>
