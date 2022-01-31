@@ -1,3 +1,5 @@
+# How to Convert a Static HTML Table to a Dynamic JavaScript Data Grid
+
 HTML Tables are simple to use for rendering small amounts of data. When we want to work with a lot of data and offer the user features like sorting, filtering and pagination, then we need to consider adding a JavaScript component.
 
 In this post we will use the free community edition of [AG Grid JavaScript Data Grid](https://www.ag-grid.com/) to convert from a long static HTML table to an easy to use interactive Data Grid. The amount of JavaScript we need to do this is minimal and very simple.
