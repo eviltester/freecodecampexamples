@@ -10,7 +10,7 @@ For example, JQuery has an [official JQuery CDN](https://releases.jquery.com/) a
 
 ## `npm` driven CDNs
 
-Not every library has their own CDN, most rely on the programmer adding the library to their project via `npm` at build time. `npm` downloads the library from a CDN and adds it to the project locally.
+Not every library has their own CDN, most libraries deploy to [npmjs.com](https://npmjs.com) and rely on the programmer adding the library to their project via `npm` at build time. `npm` downloads the library from a CDN and adds it to the project locally.
 
 We don't have to be using `npm` and JavaScript build processes to take advantage of the `npm` eco-system. We can use an 'npm driven CDN' as the host for libraries, without having to use `npm`.
 
@@ -34,9 +34,9 @@ As with all code that we copy and paste, it's worth understanding what it does s
 
 I've only ever used three CDNs:
 
-- [Unpkg.com](https://unpkg.com/ag-grid-community/)
-- [jsDelivr.com](https://www.jsdelivr.com/package/npm/ag-grid-community)
-- [cdnjs.com](https://cdnjs.com/libraries/ag-grid)
+- [Unpkg.com](https://unpkg.com)
+- [jsDelivr.com](https://www.jsdelivr.com)
+- [cdnjs.com](https://cdnjs.com)
 
 These are all professional and well run sites and the main reason I pick one above the other is that the tutorial I first followed for a library used that particular CDN in the code.
 
@@ -45,6 +45,7 @@ Knowing that multiple CDNs are available is useful because:
 - a particular version of a library you want to use might not be on every CDN
 - if a CDN starts having issues then you can amend your code to use another
 - some libaries may be more popular on one CDN than another and you may want to use the most popular CDN to increase the chance that the JavaScript library code is cached on your users's browser.
+
 
 ## `npm` CDNs distribute more than JavaScript
 
@@ -72,6 +73,7 @@ The Theme Style sheet provides the visual aesthetics for the Grid.
 >
 ```    
 
+Both of these CSS files are also deployed to npmjs.com and can be included into our project from a CDN.
 
 
 ## Controlling the Version of the library
@@ -105,9 +107,17 @@ I import the three libraries I use at specific versions:
 <script src="https://unpkg.com/faker@5.5.3/dist/faker.min.js"></script>
 ```
 
-This puts me in control of the testing and I'm more confident that any bugs in the application will be a result of my coding, rather than an update to a dependency on the project.
+This puts me in control of the testing and I'm more confident that any bugs in the application will be a result of my coding, rather than an update to a library used in the project.
 
 The different CDNs may have a different syntax for controlling the version numbers but you will be able to see the format to use by searching for the library on the CDN and following the documentation provided by each CDN.
+
+Here are the listings for AG Grid on each of the CDN sites:
+
+- [Unpkg.com - AG Grid](https://unpkg.com/ag-grid-community/)
+- [jsDelivr.com - AG Grid](https://www.jsdelivr.com/package/npm/ag-grid-community)
+- [cdnjs.com - AG Grid](https://cdnjs.com/libraries/ag-grid)
+
+If you follow the links for the AG Grid packages then you will see that each site has a slightly different interface but they all allow selecting a specific version of AG Grid and allow you to copy and paste the URL to add to your HTML file.
 
 ## CDN in Practice
 
@@ -162,7 +172,9 @@ document.addEventListener('DOMContentLoaded', () => {
 </html>
 ```
 
-![cdns and their urls](/img/cdn-urls.png)
+[Unpkg imports are demonstrated in this deployed html page.](https://eviltester.github.io/freecodecampexamples/javascript-cdns/adding-ag-grid-from-unpkg.html)
+
+![cdns and their urls](https://www.freecodecamp.org/news/content/images/2022/02/cdn-urls.png)
 
 I could easily use other CDNs by changing the `script` and `link` elements in the `head` section of my `html` file.
 
@@ -172,11 +184,15 @@ I could easily use other CDNs by changing the `script` and `link` elements in th
 - https://cdn.jsdelivr.net/npm/ag-grid-community@26.2.1/dist/styles/ag-grid.css
 - https://cdn.jsdelivr.net/npm/ag-grid-community@26.2.1/dist/styles/ag-theme-alpine.css
 
+[JSDelivr imports are demonstrated in this deployed html page.](https://eviltester.github.io/freecodecampexamples/javascript-cdns/adding-ag-grid-from-jsdelivr.html)
+
 **CdnJS** using version 26.2.1. CdnJS takes a slightly different approach to version naming so it is worth checking the version drop down on the [cdnJS AG Grid listing](https://cdnjs.com/libraries/ag-grid)
 
 - https://cdnjs.cloudflare.com/ajax/libs/ag-grid/Docs-26.2.0-20211117/ag-grid-community.min.noStyle.min.js
 - https://cdnjs.cloudflare.com/ajax/libs/ag-grid/Docs-26.2.0-20211117/styles/ag-grid.min.css
 - https://cdnjs.cloudflare.com/ajax/libs/ag-grid/Docs-26.2.0-20211117/styles/ag-theme-alpine.min.css
+
+[CdnJS imports are demonstrated in this deployed html page.](https://eviltester.github.io/freecodecampexamples/javascript-cdns/adding-ag-grid-from-cdnjs.html)
 
 ## Summary
 
